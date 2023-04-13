@@ -1,1 +1,0 @@
-# earthquakes.github.io
