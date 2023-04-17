@@ -5,7 +5,7 @@ plateURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJS
 // Mapbox token
 API_KEY = "pk.eyJ1Ijoic2xlZTkyNDQiLCJhIjoiY2xmZWJiMjVuMDI1eDN5cW51bDB6aGZuaCJ9.pH22fB7obgMGeKahEEUw2g";
 
-fatalityURL = "https://raw.githubusercontent.com/slee9244/earthquake_files/main/fatality.csv";
+fatalityURL = "https://raw.githubusercontent.com/slee9244/earthquake_files/main/fatality.csv"
 
 ///////////////////////////////////////////// Functions //////////////////////////////////////////
 // Circle color based on the magnitude of earthquake
@@ -58,21 +58,21 @@ function plateStyle (feature) {
 // Base map styles
 var dark = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery Â© <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 15,
+  maxZoom: 10,
   id: "dark-v10",
   accessToken: API_KEY
 });
 
 var light = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery Â© <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 15,     
+  maxZoom: 10,     
   id: "light-v11",
   accessToken: API_KEY
 });
 
 var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery Â© <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 15,
+  maxZoom: 10,
   id: "satellite-v9",
   accessToken: API_KEY
 });
@@ -88,9 +88,12 @@ var fatalities = new L.LayerGroup();
 
 var associatedDisasters = new L.LayerGroup();
 
+var allearthquakes = new L.LayerGroup();
+
 var overlayMaps = {
   'Plate borders': plateBorders,
-  'Earthquakes': earthquakes,
+  'Latest (7 days) Earthquakes Events': earthquakes,
+  "Earthquakes": allearthquakes,
   'Fatalities': fatalities,
   "Associated Disasters": associatedDisasters,
 };
@@ -365,5 +368,21 @@ d3.csv(fatalityURL, function(error, data) {
     );
 
     circleMarker.addTo(fatalities);
+
+    var EarthquakeMarker = L.circleMarker(latlng, {
+      radius: 10,
+      fillColor: circleColor(d['Dis Mag Value']),
+      radius: 3*d['Dis Mag Value'],
+      weight: 0,
+      fillOpacity: 0.7  
+    });
+  
+    EarthquakeMarker.bindPopup(
+      '<strong>Country:</strong> ' + d.Country + '<br>' +
+      '<strong>Year:</strong> ' + d.Year + '<br>' +
+      '<strong>Magnitude:</strong> ' + d['Dis Mag Value']
+    );
+  
+    EarthquakeMarker.addTo(allearthquakes);
   });
 });
