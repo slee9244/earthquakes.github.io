@@ -4,34 +4,21 @@ earthquakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_w
 plateURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json";
 // Mapbox token
 API_KEY = "pk.eyJ1Ijoic2xlZTkyNDQiLCJhIjoiY2xmZWJiMjVuMDI1eDN5cW51bDB6aGZuaCJ9.pH22fB7obgMGeKahEEUw2g";
-
+// Fatality Data
 fatalityURL = "https://raw.githubusercontent.com/slee9244/earthquake_files/main/fatality.csv"
 
 ///////////////////////////////////////////// Functions //////////////////////////////////////////
 // Circle color based on the magnitude of earthquake
 function circleColor(magnitude) {
-  var color="#feffdf";
-  switch(true) {
-    case (magnitude < 1):
-    color="#feffdf";
-      break;
-    case (magnitude < 2):
-      color="#ffe79a";
-      break;
-    case (magnitude < 3):
-      color="#ffa952";
-      break;
-    case (magnitude < 4):
-      color="#ef5a5a";
-      break;
-    case (magnitude < 5):
-      color="#ea2c2c";
-      break;
-    case (magnitude >= 5):
-      color="#8f3636";
-      break;
-  }
-  return color;
+  if (magnitude < 1) return "#ffffcc";
+  if (magnitude < 2) return "#ffeca0";
+  if (magnitude < 3) return "#feda76";
+  if (magnitude < 4) return "#feb24d";
+  if (magnitude < 5) return "#fd8d3b";
+  if (magnitude < 6) return "#fc4d2a";
+  if (magnitude < 7) return "#e2191c";
+  if (magnitude < 8) return "#bd0026";
+  if (magnitude >= 8) return "#7f0027";
 }
 
 // Circle style
@@ -92,7 +79,7 @@ var allearthquakes = new L.LayerGroup();
 
 var overlayMaps = {
   'Plate borders': plateBorders,
-  'Latest (7 days) Earthquakes Events': earthquakes,
+  'Latest (7 days) Earthquakes': earthquakes,
   "Earthquakes": allearthquakes,
   'Fatalities': fatalities,
   "Associated Disasters": associatedDisasters,
@@ -173,12 +160,15 @@ var legend = L.control({position: 'bottomright'});
 legend.onAdd = function() {
   var div = L.DomUtil.create("div", "legend");
   div.innerHTML += "<h4>Magnitude</h4>";
-  div.innerHTML += '<i style="background: #feffdf"></i><span>0 - 1</span><br>';
-  div.innerHTML += '<i style="background: #ffe79a"></i><span>1 - 2</span><br>';
-  div.innerHTML += '<i style="background: #ffa952"></i><span>2 - 3</span><br>';
-  div.innerHTML += '<i style="background: #ef5a5a"></i><span>3 - 4</span><br>';
-  div.innerHTML += '<i style="background: #ea2c2c"></i><span>4 - 5</span><br>';
-  div.innerHTML += '<i style="background: #8f3636"></i><span>5+</span><br>';
+  div.innerHTML += '<i style="background: #ffffcc"></i><span>0 - 1</span><br>';
+  div.innerHTML += '<i style="background: #ffeca0"></i><span>1 - 2</span><br>';
+  div.innerHTML += '<i style="background: #feda76"></i><span>2 - 3</span><br>';
+  div.innerHTML += '<i style="background: #feb24d"></i><span>3 - 4</span><br>';
+  div.innerHTML += '<i style="background: #fd8d3b"></i><span>4 - 5</span><br>';
+  div.innerHTML += '<i style="background: #fc4d2a"></i><span>5 - 6</span><br>';
+  div.innerHTML += '<i style="background: #e2191c"></i><span>6 - 7</span><br>';
+  div.innerHTML += '<i style="background: #bd0026"></i><span>7 - 8</span><br>';
+  div.innerHTML += '<i style="background: #7f0027"></i><span>8+</span><br>';
   return div;
 };
 legend.addTo(map);
@@ -372,7 +362,7 @@ d3.csv(fatalityURL, function(error, data) {
     var EarthquakeMarker = L.circleMarker(latlng, {
       radius: 10,
       fillColor: circleColor(d['Dis Mag Value']),
-      radius: 3*d['Dis Mag Value'],
+      radius: 2*d['Dis Mag Value'],
       weight: 0,
       fillOpacity: 0.7  
     });
